@@ -1,17 +1,16 @@
 "use client"
-import { Button } from '@/components/button'
-import { Card } from '@/components/card'
-import { InputField } from '@/components/inputField'
-import { session } from '@/lib/auth'
-import { profileUpdateSchema } from '@/lib/zodschema'
-import { useSession } from 'next-auth/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import { chechExistingUser } from '@/lib/utils'
+import { Button } from '@/components/button';
+import { Card } from '@/components/card';
+import { InputField } from '@/components/inputField';
+import { profileUpdateSchema } from '@/lib/zodschema';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { chechExistingUser } from '@/lib/utils';
 
 export default function Page() {
-    const { data }: { data: session } = useSession();
+    const { data: sessionData, status: sessionStatus } = useSession();
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -24,24 +23,26 @@ export default function Page() {
     const router = useRouter();
 
     useEffect(() => {
-        if (data?.user) {
+        if (sessionData?.user) {
             setFormData(prev => ({
                 ...prev,
-                email: data.user.email,
-                name: data.user.name,
+                // @ts-ignore
+                email: sessionData.user.email || '',
+                // @ts-ignore
+                name: sessionData.user.name || '',
             }));
         }
-    }, [data]);
+    }, [sessionData]);
 
     useEffect(() => {
-        if (data?.user?.email) {
-            chechExistingUser(data.user.email).then(user => {
+        if (sessionData?.user?.email) {
+            chechExistingUser(sessionData.user.email).then(user => {
                 if (user?.email) {
                     router.push('/');
                 }
             });
         }
-    }, [data, router]);
+    }, [sessionData, router]);
 
     const handleSubmit = async () => {
         const response = profileUpdateSchema.safeParse(formData);
@@ -50,7 +51,7 @@ export default function Page() {
             const errorObj = response.error.issues.reduce((acc, issue) => {
                 acc[issue.path.join('.')] = issue.message;
                 return acc;
-            }, {});
+            }, {} as Record<string, string>);
             setErrors(errorObj);
             return;
         }
@@ -58,9 +59,10 @@ export default function Page() {
         setErrors({});
         const bodyData = {
             ...response.data,
-            email: data.user.email,
-            avatar: data.user.image,
-            authType: data.user.authType,
+            email: sessionData?.user?.email,
+            avatar: sessionData?.user?.image,
+            // @ts-ignore
+            authType: sessionData?.user?.authType,
         };
 
         try {
@@ -78,36 +80,39 @@ export default function Page() {
         }
     };
 
-    if (!data?.user) {
+    if (sessionStatus === 'loading') {
         return <div>Loading...</div>;
     }
+
+    const formFields = [
+        { id: 'email', label: 'Email', type: 'text', disabled: true },
+        { id: 'username', label: 'Username', type: 'text', disabled: false },
+        { id: 'name', label: 'Name', type: 'text', disabled: false },
+        { id: 'password', label: 'Password', type: 'password', disabled: false },
+        { id: 'confirmPassword', label: 'Confirm Password', type: 'password', disabled: false },
+    ];
 
     return (
         <Card>
             <div className='grid grid-cols-1 md:grid-cols-3'>
                 <Card classes='md:col-span-2 md:order-first'>
-                    {['email', 'username', 'name', 'password', 'confirmPassword'].map(field => (
-                        <>
+                    {formFields.map(({ id, label, type, disabled }) => (
+                        <React.Fragment key={id}>
                             <InputField
-                                key={field}
-                                id={field}
-                                label={field.charAt(0).toUpperCase() + field.slice(1)}
-                                type={field.includes('password') ? 'password' : 'text'}
-                                value={formData[field]}
-                                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                                isDisable={field === 'email'}
-                                onChange={value => setFormData(prev => ({ ...prev, [field]: value }))}
+                                id={id}
+                                label={label}
+                                type={type}
+                                value={formData[id as keyof typeof formData]}
+                                placeholder={label}
+                                isDisable={disabled}
+                                onChange={value => setFormData(prev => ({ ...prev, [id]: value }))}
                             />
-                            {Object.keys(errors)
-                                .filter(errorKey => errorKey === field)
-                                .map(errorKey => (
-                                    <div key={errorKey} className="text-red-500">{errors[errorKey]}</div>
-                                ))}
-                        </>
+                            {errors[id] && <div className="text-red-500">{errors[id]}</div>}
+                        </React.Fragment>
                     ))}
                 </Card>
                 <div className='flex justify-center items-center p-3 order-first'>
-                    <Image src={data.user.image || ''} alt="profile image" width={200} height={200} className='rounded-full' />
+                    <Image src={sessionData?.user?.image || ''} alt="profile image" width={200} height={200} className='rounded-full' />
                 </div>
             </div>
             <div className='m-2'>
@@ -118,12 +123,14 @@ export default function Page() {
                     checked={formData.agreeToTerms}
                     onChange={() => setFormData(prev => ({ ...prev, agreeToTerms: !prev.agreeToTerms }))}
                 />
-                <label htmlFor="agreeToTerms">I agreed to terms and conditions</label>
+                <label htmlFor="agreeToTerms">I agree to terms and conditions</label>
                 {errors.agreeToTerms && <div className="text-red-500">{errors.agreeToTerms}</div>}
             </div>
-            {formData.agreeToTerms && <div className='flex justify-center mt-5'>
-                <Button onclick={handleSubmit}>Save</Button>
-            </div>}
+            {formData.agreeToTerms && (
+                <div className='flex justify-center mt-5'>
+                    <Button isDisabled={!formData.agreeToTerms} onclick={handleSubmit}>Save</Button>
+                </div>
+            )}
         </Card>
     );
 }

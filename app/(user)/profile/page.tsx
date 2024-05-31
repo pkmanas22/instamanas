@@ -1,16 +1,22 @@
 "use client"
-import { Button } from '@/components/button'
 import { Card } from '@/components/card'
 import { InputField } from '@/components/inputField'
-import { session } from '@/lib/auth'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { chechExistingUser } from '@/lib/utils'
 
+type Profile = {
+    username: string;
+    email: string;
+    name: string;
+    authType: string;
+    avatar: string;
+}
+
 export default function Page() {
-    const { data }: { data: session } = useSession();
-    const [profile, setProfile] = useState({
+    const { data: data, status: sessionStatus } = useSession();
+    const [profile, setProfile] = useState<Profile>({
         username: '',
         email: '',
         name: '',
@@ -34,15 +40,17 @@ export default function Page() {
         }
     }, [data]);
 
-    if (!data?.user) {
+    if (sessionStatus === 'loading') {
         return <div>Loading...</div>;
     }
+
+    const profileFields: (keyof Profile)[] = ['email', 'username', 'name', 'authType'];
 
     return (
         <Card>
             <div className='grid grid-cols-1 md:grid-cols-3'>
                 <Card classes='md:col-span-2 md:order-first'>
-                    {['email', 'username', 'name', 'authType'].map(field => (
+                    {profileFields.map(field => (
                         <InputField
                             key={field}
                             id={field}

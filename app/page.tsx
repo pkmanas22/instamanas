@@ -1,8 +1,5 @@
-import Appbar from "@/components/appbar";
 import CreatePost from "@/components/Post/createPost";
 import PostFormat from "@/components/Post/postFormat";
-import Sidebar from "@/components/sidebar";
-import Image from "next/image";
 
 export default function Home() {
   return (
