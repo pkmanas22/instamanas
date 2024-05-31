@@ -37,7 +37,7 @@ export default function PostFormat() {
         <div key={post.id} className='mt-5'>
           <Card>
             <div className='flex items-center gap-2'>
-              <Image src={post.User.avatar || ""} alt="profile image" width={30} height={30} className='rounded-full' />
+              <Image src={post.User.avatar || "https://instamanas.s3.ap-south-1.amazonaws.com/default-avatar.jpg"} alt="" width={30} height={30} className='rounded-full' />
               <div className=''>
                 <span className='italic font-semibold mr-1'>{post.User.username}</span>
                 <span className='text-gray-300'> | {postedAgo(post.createdAt)}</span>

@@ -112,7 +112,7 @@ export default function Page() {
                     ))}
                 </Card>
                 <div className='flex justify-center items-center p-3 order-first'>
-                    <Image src={sessionData?.user?.image || ''} alt="profile image" width={200} height={200} className='rounded-full' />
+                    <Image src={sessionData?.user?.image || 'https://instamanas.s3.ap-south-1.amazonaws.com/default-avatar.jpg'} alt="" width={200} height={200} className='rounded-full' />
                 </div>
             </div>
             <div className='m-2'>

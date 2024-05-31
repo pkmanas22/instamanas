@@ -65,6 +65,10 @@ export default function CreatePost() {
 
             const fileData = await fileRes.json();
 
+            if (fileData.redirect) {
+                router.push('/api/auth/signin');
+            }
+
             if (!fileData.success) {
                 alert(fileData.error);
                 setUploading(false);
@@ -99,8 +103,8 @@ export default function CreatePost() {
         <Card>
             <div className='flex gap-2'>
                 <div>
-                    {sessionData?.user?.image && (
-                        <Image src={sessionData.user.image} alt="profile image" width={40} height={40} className='rounded-full' />
+                    {sessionData?.user && (
+                        <Image src={sessionData.user.image || 'https://instamanas.s3.ap-south-1.amazonaws.com/default-avatar.jpg'} alt="" width={40} height={40} className='rounded-full' />
                     )}
                 </div>
                 <div className='w-full'>

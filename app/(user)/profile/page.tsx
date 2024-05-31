@@ -33,7 +33,7 @@ export default function Page() {
                         email: value.email,
                         name: value.name,
                         authType: value.authType,
-                        avatar: value.avatar || ''
+                        avatar: value.avatar || 'https://instamanas.s3.ap-south-1.amazonaws.com/default-avatar.jpg'
                     });
                 }
             });
@@ -64,7 +64,7 @@ export default function Page() {
                     ))}
                 </Card>
                 <div className='flex justify-center items-center p-3 order-first'>
-                    <Image src={profile.avatar} alt="profile image" width={200} height={200} className='rounded-full' />
+                    <Image src={profile.avatar} alt="" width={200} height={200} className='rounded-full' />
                 </div>
             </div>
         </Card>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({
     region: process.env.AWS_S3_REGION,
@@ -45,6 +45,10 @@ export async function POST(req: NextRequest) {
 
         if (file.size > 1024 * 1024 * 2) {
             return NextResponse.json({ error: "File size too large. Max size is 2MB." }, { status: 400 });
+        }
+
+        if (!userId) {
+            return NextResponse.json({ error: "First login yourself", redirect: true }, { status: 400 });
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
