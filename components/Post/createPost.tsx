@@ -28,9 +28,6 @@ export default function CreatePost() {
                 if (user?.id) {
                     setUserId(user.id);
                 }
-                if (!user?.email) {
-                    router.push('/api/auth/signin');
-                }
             });
         }
     }, [sessionData, router]);

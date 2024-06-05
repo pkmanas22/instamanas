@@ -84,6 +84,10 @@ export default function Page() {
         return <div>Loading...</div>;
     }
 
+    if (sessionStatus === 'unauthenticated') {
+        router.push('/api/auth/signin')
+    }
+
     const formFields = [
         { id: 'email', label: 'Email', type: 'text', disabled: true },
         { id: 'username', label: 'Username', type: 'text', disabled: false },
