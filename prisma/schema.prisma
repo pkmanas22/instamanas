@@ -20,9 +20,10 @@ model User {
   email          String   @unique
   hashedPassword String
   avatar         String?
-  authType       AuthType
+  authType       String
   createdAt      DateTime
   posts          Post[]
+  likes          Like[]
 }
 
 model Post {
@@ -33,14 +34,19 @@ model Post {
   createdAt  DateTime
   userId     String
   User       User        @relation(fields: [userId], references: [id])
+  likes      Like[]
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime
+  Post      Post     @relation(fields: [postId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 }
 
 enum ContentType {
   Photo
   Video
-}
-
-enum AuthType {
-  Facebook
-  Github
 }

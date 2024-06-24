@@ -1,8 +1,8 @@
 import FacebookProvider from 'next-auth/providers/facebook';
 import GithubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
 import { NextAuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import db from './db';
 
 interface token extends JWT {
     authType: string;
@@ -32,6 +32,10 @@ export const authOptions = {
             clientId: process.env.GITHUB_CLIENT_ID || "",
             clientSecret: process.env.GITHUB_CLIENT_SECRET || ""
         }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || ""
+        })
     ],
     secret: process.env.NEXTAUTH_SECRET || 'secr3t',
     /*session: {
