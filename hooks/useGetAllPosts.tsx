@@ -9,6 +9,11 @@ export default async function UseAllPostsHook() {
             contentUrl: true,
             id: true,
             createdAt: true,
+            likes: {
+                select: {
+                    userId: true,
+                },
+            },
             User: {
                 select: {
                     name: true,

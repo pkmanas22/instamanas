@@ -23,6 +23,7 @@ model User {
   authType       AuthType
   createdAt      DateTime
   posts          Post[]
+  likes          Like[]
 }
 
 model Post {
@@ -33,6 +34,16 @@ model Post {
   createdAt  DateTime
   userId     String
   User       User        @relation(fields: [userId], references: [id])
+  likes      Like[]
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime
+  Post      Post     @relation(fields: [postId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 }
 
 enum ContentType {
