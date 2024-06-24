@@ -20,7 +20,7 @@ model User {
   email          String   @unique
   hashedPassword String
   avatar         String?
-  authType       AuthType
+  authType       String
   createdAt      DateTime
   posts          Post[]
   likes          Like[]
@@ -49,9 +49,4 @@ model Like {
 enum ContentType {
   Photo
   Video
-}
-
-enum AuthType {
-  Facebook
-  Github
 }

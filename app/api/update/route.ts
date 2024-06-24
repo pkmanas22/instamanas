@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest) => {
                 email,
                 hashedPassword,
                 avatar,
-                authType: authType === 'facebook' ? 'Facebook' : 'Github',
+                authType,
                 createdAt: new Date(),
             },
         });
