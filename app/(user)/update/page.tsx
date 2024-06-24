@@ -37,13 +37,13 @@ export default function Page() {
     useEffect(() => {
         if (sessionData?.user?.email) {
             chechExistingUser(sessionData.user.email).then(user => {
-                // @ts-ignore
-                if (user?.authType !== sessionData?.user?.authType) {
-                    alert(`${user?.email} is already registered with us. Kindly login with ${user?.authType}`);
-                    router.push('/api/auth/signin')
-                }
                 if (user?.email) {
                     router.push('/');
+                }
+                // @ts-ignore
+                if (user?.authType && user?.authType !== sessionData?.user?.authType) {
+                    alert(`Thank u ${user?.email} is already registered with us. Kindly login with ${user?.authType}`);
+                    router.push('/api/auth/signin')
                 }
             });
         }
