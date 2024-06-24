@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest) => {
 
         if (existingUser?.id) {
             return NextResponse.json({
-                msg: `${existingUser.email} is already registered with us. Kindly login with ${existingUser.authType}`
+                error: `${existingUser.email} is already registered with us. Kindly login with ${existingUser.authType}`
             });
         }
 

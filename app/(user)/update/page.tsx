@@ -37,12 +37,17 @@ export default function Page() {
     useEffect(() => {
         if (sessionData?.user?.email) {
             chechExistingUser(sessionData.user.email).then(user => {
+                // @ts-ignore
+                if (user?.authType !== sessionData?.user?.authType) {
+                    alert(`${user?.email} is already registered with us. Kindly login with ${user?.authType}`);
+                    router.push('/api/auth/signin')
+                }
                 if (user?.email) {
                     router.push('/');
                 }
             });
         }
-    }, [sessionData, router]);
+    }, [router, sessionData]);
 
     const handleSubmit = async () => {
         const response = profileUpdateSchema.safeParse(formData);
@@ -73,10 +78,13 @@ export default function Page() {
             const resData = await res.json();
             if (resData.msg) {
                 await alert(resData.msg);
-                router.push('/');
             }
-            alert(resData.error || 'Your data has been successfully updated!');
+            if (resData.error) {
+                await alert(resData.error);
+                router.push('/api/auth/signin');
+            }
             if (resData?.id) {
+                alert('Your data has been successfully updated!');
                 router.push('/');
             }
         } catch (error) {
