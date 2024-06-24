@@ -42,7 +42,7 @@ export default function Page() {
                 }
                 // @ts-ignore
                 if (user?.authType && user?.authType !== sessionData?.user?.authType) {
-                    alert(`Thank u ${user?.email} is already registered with us. Kindly login with ${user?.authType}`);
+                    alert(`Your email Id ${user?.email} is already registered with us. Kindly login with ${user?.authType}`);
                     router.push('/api/auth/signin')
                 }
             });
