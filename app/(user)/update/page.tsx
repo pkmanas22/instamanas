@@ -71,7 +71,11 @@ export default function Page() {
                 body: JSON.stringify(bodyData)
             });
             const resData = await res.json();
-            alert(resData.error || resData.msg || 'Your data has been successfully updated!');
+            if (resData.msg) {
+                await alert(resData.msg);
+                router.push('/');
+            }
+            alert(resData.error || 'Your data has been successfully updated!');
             if (resData?.id) {
                 router.push('/');
             }
